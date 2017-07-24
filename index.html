@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/bussTable.js"></script>
+    <script src="js/weather.js"></script>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/weather-icons.min.css"/>
+
+
+    <link rel="stylesheet" href="assets/css/flipclock.css">
+
+
+</head>
+<body>
+<script src="assets/js/flipclock.min.js"></script>
+<script>window.onload = function() {
+    startWeatherForecast();
+};</script>
+<!--
+
+<div id="buss1">Buss1</div>
+<div id="time1">Time1</div>
+<div id="buss2">Buss2</div>
+<div id="time2">Time2</div>
+<div id="buss3">Buss3</div>
+<div id="time3">Time3</div>
+<button type="button" onclick="startWeatherForecast();" >Click Me!</button>
+<div id="today">
+    <div class="weather-icon"></div>
+    <div class="weather-value">Okej</div>
+</div>
+<div id="tomorrow">
+    <div class="weather-icon"></div>
+    <div class="weather-value"></div>
+</div>
+<div id="thirdDay">
+    <div class="weather-icon"></div>
+    <div class="weather-value"></div>
+</div>
+-->
+<div class="container">
+    <div class="table-responsive">
+        <table class="table">
+            <td>
+                <div class="container">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead id="buss-header">
+                            <th class="buss-label">Buss</th>
+                            <th class="departure-label">Avgång</th>
+                            </thead>
+                            <tbody>
+                            <tr id="buss1">
+                                <td class="buss">17</td>
+                                <td class="departure">00:00</td>
+                            </tr>
+                            <tr id="buss2">
+                                <td class="buss">17</td>
+                                <td class="departure">00:00</td>
+                            </tr>
+                            <tr id="buss3">
+                                <td class="buss">17</td>
+                                <td class="departure">00:00</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="clock"></div>
+            </td>
+            <script type="text/javascript">
+                var clock = $('.clock').FlipClock(0, {
+                    clockFace: 'TwentyFourHourClock',
+                    showSeconds: false
+                });
+            </script>
+            <td>
+                <div class="container">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr class="weather-header">
+                                <th>Dag</th>
+                                <th>Väder</th>
+                                <th>Nederbörd</th>
+                                <th>Vind</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr id="today">
+                                <td class="dateName">Idag</td>
+                                <td>
+                                    <div class="weather-container">
+                                        <div class="weather-icon"></div>
+                                        <div class="degreecontainer">
+                                            <div class="weather-temperature">0 ⁰C</div>
+                                            <!-- Eventuellt lägg till två divs här för högsta och lägsta temp -->
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="rainfall">
+                                        <div class="value">0</div>
+                                        <div class="unit">mm</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wind">
+                                        <div class="value-container">
+                                            <div class="value">0</div>
+                                            <div class="value-second">(0)</div>
+                                        </div>
+                                        <div class="unit">m/s</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="tomorrow">
+                                <td class="dateName">Imorgon</td>
+                                <td>
+                                    <div class="weather-container">
+                                        <div class="weather-icon"></div>
+                                        <div class="degreecontainer">
+                                            <div class="weather-temperature">0 ⁰C</div>
+                                            <!-- Eventuellt lägg till två divs här för högsta och lägsta temp -->
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="rainfall">
+                                        <div class="value">0</div>
+                                        <div class="unit">mm</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wind">
+                                        <div class="value-container">
+                                            <div class="value">0</div>
+                                            <div class="value-second">(0)</div>
+                                        </div>
+                                        <div class="unit">m/s</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="thirdDay">
+                                <td class="dateName">xxxxxx</td>
+                                <td>
+                                    <div class="weather-container">
+                                        <div class="weather-icon"></div>
+                                        <div class="degreecontainer">
+                                            <div class="weather-temperature">0 ⁰C</div>
+                                            <!-- Eventuellt lägg till två divs här för högsta och lägsta temp -->
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="rainfall">
+                                        <div class="value">0</div>
+                                        <div class="unit">mm</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="wind">
+                                        <div class="value-container">
+                                            <div class="value">0</div>
+                                            <div class="value-second">(0)</div>
+                                        </div>
+                                        <div class="unit">m/s</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </table>
+    </div>
+</div>
+
+
+
+</body>
+</html>

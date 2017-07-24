@@ -1,0 +1,37 @@
+.weather-header {
+    font-family: FuturaDemiBold,Verdana,Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+
+.value {
+    float:left;
+}
+
+.value-second {
+    padding-left: 3px;
+    overflow: hidden;
+}
+.weather-icon {
+    float:left;
+}
+.degreecontainer {
+    overflow: hidden;
+    padding-left: 3px;
+}
+.weather-container{
+    float:left;
+}
+.degreecontainer{
+    overflow: hidden;
+    padding-left: 3px;
+}
+.buss {
+    border:1px solid #CCC;
+    border-radius: 3px;
+}
+body {
+    background: black;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+
+}
