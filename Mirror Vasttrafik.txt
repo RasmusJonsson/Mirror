@@ -1,0 +1,4 @@
+Studiegången busshållplats för båda id 9021014007160000
+Studiegången busshållplats för läge A id 9021014007160001
+ - Läge A: Om man skall åka in mot stan(Centralstationen,Chalmers)
+Studiegången busshållplats för läge B id 9021014007160002
