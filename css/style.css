@@ -1,37 +1,56 @@
-.weather-header {
-    font-family: FuturaDemiBold,Verdana,Arial,"Helvetica Neue",Helvetica,sans-serif;
+@font-face {
+    font-family: GothamRounded;
+    src: url(GothamRoundedBook.ttf);
 }
 
-.value {
-    float:left;
-}
-
-.value-second {
-    padding-left: 3px;
-    overflow: hidden;
-}
-.weather-icon {
-    float:left;
-}
-.degreecontainer {
-    overflow: hidden;
-    padding-left: 3px;
-}
-.weather-container{
-    float:left;
-}
-.degreecontainer{
-    overflow: hidden;
-    padding-left: 3px;
-}
-.buss {
-    border:1px solid #CCC;
-    border-radius: 3px;
-}
 body {
+    font-family: GothamRounded, sans-serif;
     background: black;
     color: white;
     font-size: 20px;
     font-weight: bold;
+}
 
+.buss_table_container {
+    margin-top: 50px;
+}
+
+.weather_container {
+    margin-top: 30px;
+}
+
+.day_name {
+    margin-top: 15px;
+}
+
+.weather_icon {
+    text-align: left;
+    font-size: 30px;
+    margin-top: 15px;
+}
+
+.temp_low {
+    font-size: 18px;
+}
+
+.rainfall {
+
+}
+
+.wind_gust {
+    text-align: left;
+}
+
+.wind_unit {
+    font-size: 18px;
+}
+
+.time {
+    font-size: 80px;
+    text-align: center;
+}
+
+.date_container {
+    font-size: 25px;
+    margin-left: 35px;
 }

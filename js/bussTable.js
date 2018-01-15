@@ -44,7 +44,7 @@ function getData(data) {
             'Authorization' : 'Bearer ' + data.access_token,
         },
         success: function(recievedData) {
-            useData(recievedData);
+            populateTimeTable(recievedData);
         },
         error: function() {
             console.log("https://api.vasttrafik.se/bin/rest.exe/v2/departureBoard?id=" + data.access_token + "&date=" + date + "&time=" + time)
@@ -52,26 +52,29 @@ function getData(data) {
     })
 }},10000);
 
-function useData(recievedData) {
+function populateTimeTable(recievedData) {
     console.log(recievedData);
-    var departures = recievedData.getElementsByTagName("Departure");
-    var filteredStops = filterDepatureBoard(departures);
 
-    //$("#buss1").text(departures[0].getAttribute("name"));
-    $("#buss1").children(".departure").text(filteredStops[0]);
-    //$("#buss2").text(departures[1].getAttribute("name"));
-    $("#buss2").children(".departure").text(filteredStops[1]);
-    //$("#buss3").text(departures[2].getAttribute("name"));
-    $("#buss3").children(".departure").text(filteredStops[2]);
+    var departures = recievedData.getElementsByTagName("Departure");
+    var filtredDepatureBoard = filterDepatureBoard(departures);
+    var filteredStops = filtredDepatureBoard[0];
+    var filteredDestinations = filtredDepatureBoard[1];
+
+    $(".buss_container").each(function (index) {
+        $(this).children(".departure_time").text(filteredStops[index]);
+        $(this).children(".destination").text(filteredDestinations[index]);
+    });
 
 }
 
 function filterDepatureBoard(data) {
     var filteredStops = [];
+    var filteredDestinations = [];
     for(i = 0; i < data.length; i++) {
         if(data[i].getAttribute("track").localeCompare("A") == 0) {
             filteredStops.push(data[i].getAttribute("time"));
+            filteredDestinations.push(data[i].getAttribute("direction"))
         }
     }
-    return filteredStops;
+    return [filteredStops, filteredDestinations];
 }

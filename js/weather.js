@@ -14,14 +14,7 @@
 
  // "2017-07-05T18:00:00Z"
  */
-var weekday = new Array(7);
-weekday[0] = "Söndag";
-weekday[1] = "Måndag";
-weekday[2] = "Tisdag";
-weekday[3] = "Onsdag";
-weekday[4] = "Torsdag";
-weekday[5] = "Fredag";
-weekday[6] = "Lördag";
+
 
 var url = "http://opendata-download-metfcst.smhi.se/api/category/pmp2g/version/2/geotype/" +
     "point/lon/12.038828/lat/57.714660/data.json";
@@ -31,55 +24,61 @@ function startWeatherForecast() {
     $.ajax({
         url: url, dataType: 'json',
         success: function (response) {
-            initWeather(response.timeSeries);
+            initWeather(response);
         },
         error: function () {
             alert("Something with the request to ''Smhi'' went wrong.")
         }
     });
+
 }
 
-function initWeather(theTimeSerie) {
-    $("#today").find('.weather-temperature').text(theTimeSerie[getIndexForToday(theTimeSerie)].parameters[1].values[0].toFixed(1) + " ⁰C");
-    $("#tomorrow").find('.weather-temperature').text(theTimeSerie[getIndexForTomorrow(theTimeSerie)].parameters[1].values[0].toFixed(1) + " ⁰C");
-    $("#thirdDay").find('.weather-temperature').text(theTimeSerie[getIndexForThirdDay(theTimeSerie)].parameters[1].values[0].toFixed(1) + " ⁰C");
+var tempLowHigh;
+var rainfall;
+var wind;
+var dayNames;
 
-    $("#today").find('.weather-icon').addClass(getWeatherIcon(theTimeSerie[getIndexForToday(theTimeSerie)].parameters[18].values[0]));
-    $("#tomorrow").find('.weather-icon').addClass(getWeatherIcon(theTimeSerie[getIndexForTomorrow(theTimeSerie)].parameters[18].values[0]));
-    $("#thirdDay").find('.weather-icon').addClass(getWeatherIcon(theTimeSerie[getIndexForThirdDay(theTimeSerie)].parameters[18].values[0]));
+function initWeather(response) {
+
+    theTimeSerie = response.timeSeries;
+
+    tempLowHigh = getLowHigh(theTimeSerie);
+    rainfall = getRainfall(theTimeSerie);
+    wind = getWind(theTimeSerie);
+    dayNames = ["Idag","Imorgon",getThirdDay()];
+    weatherIcons = getWeatherIcons(theTimeSerie);
+    populateWeather()
 }
 
-function getIndexForToday(theTimeSerie) {
-    var index = 0;
-    var timeForCurrentIndex = theTimeSerie[index].validTime.substring(11,13);
-    //console.log(timeForCurrentIndex);
+function populateWeather() {
 
+    $(".day").each(function(index){
+        // Set day name
+        $(this).children(".day_name").text(dayNames[index]);
+        // Set weather icon
+        $(this).children(".weather_icon").addClass(getWeatherIcon(weatherIcons[index]));
 
-    while( 14 - timeForCurrentIndex != 0) {
-        index++;
-        timeForCurrentIndex = theTimeSerie[index].validTime.substring(11,13);
-    }
+    });
+    $(".weather-info").each(function (index) {
+        // Set temperature
+        $(this).find(".temp_low").text(tempLowHigh[2*index].toString() + "°C");
+        $(this).find(".temp_high").text(tempLowHigh[2*index+1].toString()+ "°C");
+        // Set rainfall
+        $(this).find(".rainfall").text(rainfall[index].toString()+ " mm");
+        // Set wind_direction
+        //$(this).children(".wind_direction").text(rainfall(index));
+        // Set wind average and gust
+        $(this).find(".wind_average").text(wind[2*index].toString());
+        $(this).find(".wind_gust").text("("+wind[2*index+1].toString()+")");
+    })
+}
 
-    return index;
+function getWeatherDataFromDate(timeSerie,code) {
+    return timeSerie.filter(
+        function(timeSerie){return timeSerie.validTime.substring(0,9) == code}
+    );
 }
-function getIndexForTomorrow(theTimeSerie) {
-    var index = getIndexForToday(theTimeSerie) + 1;
-    var timeForCurrentIndex = theTimeSerie[index].validTime.substring(11,13);
-    while( 14 - timeForCurrentIndex != 0) {
-        index++;
-        timeForCurrentIndex = theTimeSerie[index].validTime.substring(11,13);
-    }
-    return index;
-}
-function getIndexForThirdDay(theTimeSerie) {
-    var index = getIndexForTomorrow(theTimeSerie) + 1;
-    var timeForCurrentIndex = theTimeSerie[index].validTime.substring(11,13);
-    while( 12 - timeForCurrentIndex != 0) {
-        index++;
-        timeForCurrentIndex = theTimeSerie[index].validTime.substring(11,13);
-    }
-    return index;
-}
+
 
 function getWeatherIcon(iconNumber) {
     switch(iconNumber) {
@@ -123,11 +122,162 @@ function getWeatherIcon(iconNumber) {
     }
 }
 
-function getRainfall() {
+function getThirdDay(){
+    var weekday=new Array(7);
+    weekday[0] = "Söndag";
+    weekday[1] = "Måndag";
+    weekday[2] = "Tisdag";
+    weekday[3] = "Onsdag";
+    weekday[4] = "Torsdag";
+    weekday[5] = "Fredag";
+    weekday[6] = "Lördag";
+    dayIndex = new Date().getDay();
+    dayAfterTomorrow = (dayIndex + 2) % 7;
+    return weekday[dayAfterTomorrow]
 
 }
 
+function getLowHigh(timeSerie) {
+    // Någon liten bugg kvar med tredje dagen med den höga temperaturen
+    var date = 0;
+    var temperature = 0;
+    var today = getTodayDate();
+    var tomorrow = getTomorrowDate();
+    var afterTomorrow = getDayAfterTomorrowDate();
+    // today low,today high, tomorrow low....
+    var tempLowHigh = [100, -100, 100, -100, 100, -100];
+    for(var i = 0; i < timeSerie.length; i++){
+        // Current index date
+        date = timeSerie[i].validTime.substring(0,10);
+        // Current index temperature
+        //timeSerie[i].parameters[1].values[0].toFixed(0);
+        temperature = Math.round(timeSerie[i].parameters[1].values[0]);
 
+        // Parse today date
+        if(date == today){
+            //Set Low Temp
+            if (temperature < tempLowHigh[0])  tempLowHigh[0] = temperature;
+            //Set High Temp
+            if (temperature > tempLowHigh[1])  tempLowHigh[1] = temperature;
+        }
+        // Parse tomorrows date
+        if(date == tomorrow) {
+            //Set Low Temp
+            if (temperature < tempLowHigh[2])  tempLowHigh[2] = temperature;
+            //Set High Temp
+            if (temperature > tempLowHigh[3])  tempLowHigh[3] = temperature;
+        }
+        // Parse after tomorrows date
+        if(date == afterTomorrow) {
+            //Set Low Temp
+            if (temperature < tempLowHigh[4])  tempLowHigh[4] = temperature;
+            //Set High Temp
+            if (temperature > tempLowHigh[5])  tempLowHigh[5] = temperature;
+        }
+    }
+    return tempLowHigh;
+}
+
+function getRainfall(timeSerie) {
+    var date = 0;
+    var today = getTodayDate();
+    var tomorrow = getTomorrowDate();
+    var afterTomorrow = getDayAfterTomorrowDate();
+    var rainfall = 0;
+    //Rainfall today,tomorrow,afterTomorrow
+    var totalRainfall = [0,0,0];
+
+    for(var i = 0; i < timeSerie.length; i++){
+        date = timeSerie[i].validTime.substring(0,10);
+        // Medelvärdet
+        rainfall = timeSerie[i].parameters[16].values[0];
+
+        if(date == today){
+            totalRainfall[0] += rainfall;
+        }
+        if(date == tomorrow) {
+            totalRainfall[1] += rainfall;
+        }
+        if(date == afterTomorrow) {
+            totalRainfall[2] += rainfall;
+        }
+    }
+
+    for(var j = 0; j < totalRainfall.length; j++){
+        totalRainfall[j] = parseFloat(Math.round(totalRainfall[j] * 10) / 10).toFixed(1);
+    }
+    return totalRainfall;
+}
+
+function getWind(timeSerie) {
+    var today = getTodayDate()+ "T" + new Date().hour()+":00:00Z";
+    var tomorrow = getTomorrowDate()+ "T13:00:00Z";
+    var afterTomorrow = getDayAfterTomorrowDate()+ "T12:00:00Z";
+    // Today wind, today gust, tomorrow wind...
+    var windData = [0,0,0,0,0,0];
+
+    var todayData = getWeatherData(timeSerie,today);
+    var tomorrowData = getWeatherData(timeSerie,tomorrow);
+    var afterTomorrowData = getWeatherData(timeSerie,afterTomorrow);
+
+    windData[0] = todayData[0].parameters[4].values[0];
+    windData[1] = todayData[0].parameters[11].values[0];
+    windData[2] = tomorrowData[0].parameters[4].values[0];
+    windData[3] = tomorrowData[0].parameters[11].values[0];
+    windData[4] = afterTomorrowData[0].parameters[4].values[0];
+    windData[5] = afterTomorrowData[0].parameters[11].values[0];
+
+    return windData;
+
+}
+
+function getWeatherIcons(timeSerie) {
+    var today = getTodayDate()+ "T" + new Date().hour()+":00:00Z";
+    var tomorrow = getTomorrowDate()+ "T13:00:00Z";
+    var afterTomorrow = getDayAfterTomorrowDate()+ "T12:00:00Z";
+
+    var weatherIcons = [0,0,0];
+
+    var todayData = getWeatherData(timeSerie,today);
+    var tomorrowData = getWeatherData(timeSerie,tomorrow);
+    var afterTomorrowData = getWeatherData(timeSerie,afterTomorrow);
+
+    weatherIcons[0] = todayData[0].parameters[18].values[0];
+    weatherIcons[1] = tomorrowData[0].parameters[18].values[0];
+    weatherIcons[2] = afterTomorrowData[0].parameters[18].values[0];
+
+    return weatherIcons;
+}
+
+Date.prototype.today = function () {
+    return this.getFullYear() + "-" +(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) + "-" +((this.getDate() < 10)?"0":"") + this.getDate();
+};
+
+Date.prototype.hour = function () {
+    return ((this.getHours() < 10)?"0":"") + this.getHours();
+};
+
+function getTodayDate() {
+    return new Date().today();// + "T" + new Date().hour()+":00:00Z";
+}
+
+function getTomorrowDate() {
+    var currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + 1);
+    return currentDate.today();// + "T13:00:00Z";
+}
+
+function getDayAfterTomorrowDate() {
+    var currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + 2);
+    return currentDate.today();// + "T12:00:00Z";
+}
+
+function getWeatherData(timeSerie,code) {
+    return timeSerie.filter(
+        function(timeSerie){return timeSerie.validTime == code}
+    );
+}
 
 
 

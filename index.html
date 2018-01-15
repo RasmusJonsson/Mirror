@@ -5,11 +5,26 @@
     <title>Title</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <!--
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+            crossorigin="anonymous"></script>
     <script src="js/bussTable.js"></script>
     <script src="js/weather.js"></script>
+    <script src="js/clock.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="css/weather-icons.min.css"/>
+    <link rel="stylesheet" href="font/font-awesome-4.7.0/css/font-awesome.css">
 
 
     <link rel="stylesheet" href="assets/css/flipclock.css">
@@ -17,174 +32,136 @@
 
 </head>
 <body>
-<script src="assets/js/flipclock.min.js"></script>
-<script>window.onload = function() {
+<script>window.onload = function () {
     startWeatherForecast();
+    populateClock();
+    setInterval(populateClock, 1000);
+    setInterval(startWeatherForecast, 1000*60*30);
 };</script>
-<!--
 
-<div id="buss1">Buss1</div>
-<div id="time1">Time1</div>
-<div id="buss2">Buss2</div>
-<div id="time2">Time2</div>
-<div id="buss3">Buss3</div>
-<div id="time3">Time3</div>
-<button type="button" onclick="startWeatherForecast();" >Click Me!</button>
-<div id="today">
-    <div class="weather-icon"></div>
-    <div class="weather-value">Okej</div>
-</div>
-<div id="tomorrow">
-    <div class="weather-icon"></div>
-    <div class="weather-value"></div>
-</div>
-<div id="thirdDay">
-    <div class="weather-icon"></div>
-    <div class="weather-value"></div>
-</div>
--->
+
 <div class="container">
-    <div class="table-responsive">
-        <table class="table">
-            <td>
-                <div class="container">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead id="buss-header">
-                            <th class="buss-label">Buss</th>
-                            <th class="departure-label">Avgång</th>
-                            </thead>
-                            <tbody>
-                            <tr id="buss1">
-                                <td class="buss">17</td>
-                                <td class="departure">00:00</td>
-                            </tr>
-                            <tr id="buss2">
-                                <td class="buss">17</td>
-                                <td class="departure">00:00</td>
-                            </tr>
-                            <tr id="buss3">
-                                <td class="buss">17</td>
-                                <td class="departure">00:00</td>
-                            </tr>
-                            </tbody>
-                        </table>
+    <div class="row">
+        <div class="col-sm-4 weather_container">
+            <div class="row day" id="day0">
+                <div class="col-sm-4 day_name"> Idag</div>
+                <div class="col-sm-8 weather_icon"></div>
+            </div>
+            <div class="row weather-info">
+                <div class="col-sm-2 temperature">
+                    <div class="row">
+                        <div class="col-sm-12 temp_high"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 temp_low"></div>
                     </div>
                 </div>
-            </td>
-            <td>
-                <div class="clock"></div>
-            </td>
-            <script type="text/javascript">
-                var clock = $('.clock').FlipClock(0, {
-                    clockFace: 'TwentyFourHourClock',
-                    showSeconds: false
-                });
-            </script>
-            <td>
-                <div class="container">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr class="weather-header">
-                                <th>Dag</th>
-                                <th>Väder</th>
-                                <th>Nederbörd</th>
-                                <th>Vind</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr id="today">
-                                <td class="dateName">Idag</td>
-                                <td>
-                                    <div class="weather-container">
-                                        <div class="weather-icon"></div>
-                                        <div class="degreecontainer">
-                                            <div class="weather-temperature">0 ⁰C</div>
-                                            <!-- Eventuellt lägg till två divs här för högsta och lägsta temp -->
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="rainfall">
-                                        <div class="value">0</div>
-                                        <div class="unit">mm</div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="wind">
-                                        <div class="value-container">
-                                            <div class="value">0</div>
-                                            <div class="value-second">(0)</div>
-                                        </div>
-                                        <div class="unit">m/s</div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr id="tomorrow">
-                                <td class="dateName">Imorgon</td>
-                                <td>
-                                    <div class="weather-container">
-                                        <div class="weather-icon"></div>
-                                        <div class="degreecontainer">
-                                            <div class="weather-temperature">0 ⁰C</div>
-                                            <!-- Eventuellt lägg till två divs här för högsta och lägsta temp -->
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="rainfall">
-                                        <div class="value">0</div>
-                                        <div class="unit">mm</div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="wind">
-                                        <div class="value-container">
-                                            <div class="value">0</div>
-                                            <div class="value-second">(0)</div>
-                                        </div>
-                                        <div class="unit">m/s</div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr id="thirdDay">
-                                <td class="dateName">xxxxxx</td>
-                                <td>
-                                    <div class="weather-container">
-                                        <div class="weather-icon"></div>
-                                        <div class="degreecontainer">
-                                            <div class="weather-temperature">0 ⁰C</div>
-                                            <!-- Eventuellt lägg till två divs här för högsta och lägsta temp -->
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="rainfall">
-                                        <div class="value">0</div>
-                                        <div class="unit">mm</div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="wind">
-                                        <div class="value-container">
-                                            <div class="value">0</div>
-                                            <div class="value-second">(0)</div>
-                                        </div>
-                                        <div class="unit">m/s</div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                <div class="col-sm-4 rainfall"></div>
+                <!--<div class="col-sm-2 wind_direction"></div>-->
+                <div class="col-sm-3 wind">
+                    <div class="row">
+                        <div class="col-sm-6 wind_average"></div>
+                        <div class="col-sm-6 wind_gust"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 wind_unit">m/s</div>
                     </div>
                 </div>
-            </td>
-        </table>
+                <div class="col-sm-3 empty"></div>
+            </div>
+            <div class="row day" id="day1">
+                <div class="col-sm-4 day_name"> Imorgon </div>
+                <div class="col-sm-8 weather_icon"></div>
+            </div>
+            <div class="row weather-info">
+                <div class="col-sm-2 temperature">
+                    <div class="row">
+                        <div class="col-sm-12 temp_high"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 temp_low"></div>
+                    </div>
+                </div>
+                <div class="col-sm-4 rainfall"></div>
+                <!--<div class="col-sm-2 wind_direction"></div>-->
+                <div class="col-sm-3 wind">
+                    <div class="row">
+                        <div class="col-sm-6 wind_average"></div>
+                        <div class="col-sm-6 wind_gust"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 wind_unit">m/s</div>
+                    </div>
+                </div>
+                <div class="col-sm-3 empty"></div>
+            </div>
+            <div class="row day" id="day2">
+                <div class="col-sm-4 day_name"> Dunno! </div>
+                <div class="col-sm-8 weather_icon"></div>
+            </div>
+            <div class="row weather-info">
+                <div class="col-sm-2 temperature">
+                    <div class="row">
+                        <div class="col-sm-12 temp_high"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 temp_low"></div>
+                    </div>
+                </div>
+                <div class="col-sm-4 rainfall"></div>
+                <!--<div class="col-sm-2 wind_direction"></div>-->
+                <div class="col-sm-3 wind">
+                    <div class="row">
+                        <div class="col-sm-6 wind_average"></div>
+                        <div class="col-sm-6 wind_gust"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 wind_unit">m/s</div>
+                    </div>
+                </div>
+                <div class="col-sm-3 empty"></div>
+            </div>
+        </div>
+
+        <div class="col-sm-4 time_container">
+            <div class="row">
+                <div class="col-sm-12 time"></div>
+            </div>
+            <div class="row date_container">
+                <div class="col-sm-12 date"></div>
+            </div>
+        </div>
+
+        <div class="col-sm-4 buss_table_container">
+            <div class="row buss_container">
+                <div class="col-sm-2 buss_icon">
+                    <i class="fa fa-bus" aria-hidden="true"></i>
+                </div>
+                <div class="col-sm-2 buss_number">17</div>
+                <div class="col-sm-4 destination"></div>
+                <div class="col-sm-4 departure_time"></div>
+            </div>
+
+            <div class="row buss_container">
+                <div class="col-sm-2 buss_icon">
+                    <i class="fa fa-bus" aria-hidden="true"></i>
+                </div>
+                <div class="col-sm-2 buss_number">17</div>
+                <div class="col-sm-4 destination"></div>
+                <div class="col-sm-4 departure_time"></div>
+            </div>
+
+            <div class="row buss_container">
+                <div class="col-sm-2 buss_icon">
+                    <i class="fa fa-bus" aria-hidden="true"></i>
+                </div>
+                <div class="col-sm-2 buss_number">17</div>
+                <div class="col-sm-4 destination"></div>
+                <div class="col-sm-4 departure_time"></div>
+            </div>
+        </div>
     </div>
 </div>
-
-
 
 </body>
 </html>
